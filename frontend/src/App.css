@@ -388,3 +388,43 @@ body {
   border-radius: 8px;
   cursor: pointer;
 }
+
+.error {
+  color: #d32f2f;
+  font-size: 0.9rem;
+}
+.success {
+  color: #2e7d32;
+  font-size: 0.9rem;
+}
+/* Success and error messages */
+.error {
+  color: #d32f2f;
+  background: #ffebee;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.success {
+  color: #2e7d32;
+  background: #e8f5e9;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.success-box {
+  padding: 1rem 0;
+}
+
+.success-box .success {
+  margin-bottom: 0.5rem;
+}
+
+/* Disabled button state */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

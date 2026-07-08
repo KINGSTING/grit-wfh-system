@@ -1,12 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import logo from '../assets/gritlabs_logo.jpg';
 import Feed from '../components/Feed/Feed';
 
 function Dashboard() {
-  const [user] = useState({
-    name: 'Jemar John',
-    position: 'Full Stack Developer',
-  });
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get('http://localhost:3000/api/profile');
+        setProfile(res.data.data);
+      } catch (err) {
+        console.error('Failed to fetch profile', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="dashboard">
@@ -14,8 +29,10 @@ function Dashboard() {
       <aside className="dashboard-left">
         <div className="profile">
           <div className="avatar">👤</div>
-          <h3>{user.name}</h3>
-          <p>{user.position}</p>
+          <h3>{profile?.name || 'User'}</h3>
+          <p>{profile?.position || ''}</p>
+          <p>{profile?.team || ''}</p>
+          <p className="role">{profile?.role || ''}</p>
         </div>
         <div className="calendar">
           <h4>Calendar</h4>
