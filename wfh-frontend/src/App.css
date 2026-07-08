@@ -1,0 +1,390 @@
+/* Reset & base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  background: #f4f6f9;
+  min-height: 100vh;
+}
+
+/* Login & Signup pages */
+.login-page, .signup-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #ffffff;
+}
+
+.login-container, .signup-container {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  width: 360px;
+  text-align: center;
+}
+
+.login-logo {
+  width: 120px;
+  margin-bottom: 1.5rem;
+}
+
+.login-container h2, .signup-container h2 {
+  margin-bottom: 1.5rem;
+  color: #1a1a2e;
+}
+
+.login-container form, .signup-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-container input, .signup-container input {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.login-container button, .signup-container button {
+  padding: 0.75rem;
+  background: #1a1a2e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.login-container button:hover, .signup-container button:hover {
+  background: #2d2d44;
+}
+
+.login-container p, .signup-container p {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Dashboard layout */
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+}
+
+.dashboard-left {
+  width: 240px;
+  background: #1a1a2e;
+  color: white;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.dashboard-left .profile {
+  text-align: center;
+}
+
+.dashboard-left .avatar {
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-left .profile h3 {
+  font-size: 1.2rem;
+}
+
+.dashboard-left .profile p {
+  color: #a0a0b0;
+  font-size: 0.9rem;
+}
+
+.dashboard-left .calendar h4 {
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-left .calendar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.dashboard-left .calendar li {
+  padding: 0.3rem 0;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #333;
+}
+
+.dashboard-center {
+  flex: 1;
+  padding: 2rem;
+  background: #f4f6f9;
+}
+
+.dashboard-center h2 {
+  margin-bottom: 1.5rem;
+  color: #1a1a2e;
+}
+
+.monitoring-content {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.widget {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  flex: 1 1 200px;
+  font-weight: 500;
+}
+
+.dashboard-right {
+  width: 240px;
+  background: white;
+  padding: 2rem 1rem;
+  border-left: 1px solid #e0e0e0;
+}
+
+.dashboard-right h4 {
+  margin-bottom: 1rem;
+  color: #1a1a2e;
+}
+
+.announcements {
+  list-style: none;
+  padding: 0;
+}
+
+.announcements li {
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+}
+
+.small-logo {
+  width: 80px;
+  margin-top: 2rem;
+  opacity: 0.6;
+}
+
+/* Feed styles */
+.feed {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.post-form {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: 1.5rem;
+}
+
+.post-form h3 {
+  margin-bottom: 1rem;
+  color: #1a1a2e;
+}
+
+.post-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.post-form input,
+.post-form textarea {
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.post-form textarea {
+  min-height: 60px;
+}
+
+.post-form button {
+  padding: 0.6rem;
+  background: #1a1a2e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.post-form button:hover {
+  background: #2d2d44;
+}
+
+.posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.post-item {
+  background: white;
+  padding: 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.post-employee {
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.post-body h4 {
+  margin-bottom: 0.3rem;
+  color: #1a1a2e;
+}
+
+.post-body p {
+  color: #444;
+  margin-bottom: 0.5rem;
+}
+
+.post-body a {
+  color: #0066cc;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.post-body a:hover {
+  text-decoration: underline;
+}
+/* Post item (compact) */
+.post-item {
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: 0.2s;
+  border: 1px solid transparent;
+}
+
+.post-item:hover {
+  border-color: #ccc;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.post-preview {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
+}
+
+.post-click-hint {
+  display: block;
+  margin-top: 0.5rem;
+  color: #888;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #888;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.modal-employee {
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.modal-task {
+  font-size: 1.4rem;
+  margin: 0.5rem 0;
+  color: #1a1a2e;
+}
+
+.modal-description {
+  color: #444;
+  margin: 0.5rem 0 1rem 0;
+  line-height: 1.5;
+}
+
+.modal-link {
+  display: inline-block;
+  background: #1a1a2e;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  margin: 0.5rem 0;
+}
+
+.modal-link:hover {
+  background: #2d2d44;
+}
+
+.modal-footer {
+  margin-top: 1.5rem;
+  text-align: right;
+}
+
+.modal-footer button {
+  padding: 0.5rem 1.5rem;
+  background: #ccc;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
