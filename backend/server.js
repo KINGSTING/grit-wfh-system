@@ -74,12 +74,17 @@ app.get('/api/health', async (req, res) => {
 
 // Sign Up – with trigger‑based profile creation
 app.post('/api/auth/signup', async (req, res) => {
-  try {
-    console.log('📝 Signup request received:', req.body);
+  console.log('📝 Received body:', req.body);
+  console.log('🔑 SUPABASE_URL exists?', !!process.env.SUPABASE_URL);
+  console.log('🔑 SUPABASE_ANON_KEY exists?', !!process.env.SUPABASE_ANON_KEY);
+  console.log('🔑 SUPABASE_SERVICE_ROLE_KEY exists?', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
 
+  try {
     const { email, password, name, position, team, role } = req.body;
 
-    // 1. Sign up with Supabase Auth
+    // Log the exact call being made
+    console.log('📤 Calling supabase.auth.signUp with:', { email });
+
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -88,41 +93,46 @@ app.post('/api/auth/signup', async (req, res) => {
       },
     });
 
+    // Log the raw response
+    console.log('📥 Auth response - data:', JSON.stringify(authData, null, 2));
+    console.log('📥 Auth response - error:', JSON.stringify(authError, null, 2));
+
     if (authError) {
-      console.error('❌ Auth error:', authError);
-      return res.status(400).json({ error: authError.message || 'Auth error' });
+      // Try to extract the actual error message
+      const errorMessage = authError.message || JSON.stringify(authError);
+      console.error('❌ Auth error:', errorMessage);
+      return res.status(400).json({ error: errorMessage });
     }
 
-    const userId = authData.user?.id;
+    const userId = authData?.user?.id;
     if (!userId) {
-      console.error('❌ No user ID returned');
-      return res.status(500).json({ error: 'User creation failed.' });
+      console.error('❌ No user ID in response:', authData);
+      return res.status(500).json({ error: 'User creation failed - no user ID returned' });
     }
 
     console.log('✅ User created with ID:', userId);
 
-    // 2. Update or insert profile
+    // Update profile
     const { error: updateError } = await supabaseAdmin
       .from('profiles')
       .update({ name, position, team, role })
       .eq('id', userId);
 
     if (updateError) {
-      console.error('⚠️ Profile update failed, trying insert:', updateError);
+      console.error('⚠️ Profile update failed:', updateError.message);
       const { error: insertError } = await supabaseAdmin
         .from('profiles')
         .insert([{ id: userId, name, position, team, role }]);
 
       if (insertError) {
-        console.error('❌ Profile insert failed:', insertError);
-        return res.status(400).json({ error: insertError.message || 'Profile insert failed' });
+        console.error('❌ Profile insert failed:', insertError.message);
+        return res.status(400).json({ error: insertError.message });
       }
     }
 
-    console.log('✅ Profile saved for user:', userId);
     res.status(201).json({ message: 'User created successfully!' });
   } catch (err) {
-    console.error('🔥 Unhandled error in signup:', err);
+    console.error('🔥 Unhandled error:', err);
     res.status(500).json({ error: err.message || 'Internal server error' });
   }
 });
