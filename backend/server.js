@@ -7,7 +7,29 @@ const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+
+// ========================
+//  CORS Configuration (must be before routes)
+// ========================
+const allowedOrigins = [
+  'http://localhost:5174',
+  'https://grit-wfh-system-cyyjmczwq-grit-labs1.vercel.app',
+  'https://grit-wfh-system.vercel.app',
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
+
 app.use(express.json());
 
 // ========================
