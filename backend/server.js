@@ -74,42 +74,61 @@ app.get('/api/health', async (req, res) => {
 
 // Sign Up – with trigger‑based profile creation
 app.post('/api/auth/signup', async (req, res) => {
-  const { email, password, name, position, team, role } = req.body;
+  try {
+    console.log('📝 Signup request received:', req.body);
 
-  const { data: authData, error: authError } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo: redirectUrl,
-    },
-  });
+    const { email, password, name, position, team, role } = req.body;
 
-  if (authError) {
-    return res.status(400).json({ error: authError.message });
-  }
+    // 1. Sign up with Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+      },
+    });
 
-  const userId = authData.user?.id;
-  if (!userId) {
-    return res.status(500).json({ error: 'User creation failed.' });
-  }
-
-  // 1. Try to update the profile (created by the trigger)
-  const { error: updateError } = await supabaseAdmin
-    .from('profiles')
-    .update({ name, position, team, role })
-    .eq('id', userId);
-
-  // 2. If update fails (e.g., trigger didn't fire yet), fallback to insert
-  if (updateError) {
-    const { error: insertError } = await supabaseAdmin
-      .from('profiles')
-      .insert([{ id: userId, name, position, team, role }]);
-    if (insertError) {
-      return res.status(400).json({ error: insertError.message });
+    if (authError) {
+      console.error('❌ Auth error:', authError);
+      return res.status(400).json({ error: authError.message || 'Auth error' });
     }
-  }
 
-  res.status(201).json({ message: 'User created successfully!' });
+    const userId = authData.user?.id;
+    if (!userId) {
+      console.error('❌ No user ID returned');
+      return res.status(500).json({ error: 'User creation failed.' });
+    }
+
+    console.log('✅ User created with ID:', userId);
+
+    // 2. Update or insert profile
+    const { error: updateError } = await supabaseAdmin
+      .from('profiles')
+      .update({ name, position, team, role })
+      .eq('id', userId);
+
+    if (updateError) {
+      console.error('⚠️ Profile update failed, trying insert:', updateError);
+      const { error: insertError } = await supabaseAdmin
+        .from('profiles')
+        .insert([{ id: userId, name, position, team, role }]);
+
+      if (insertError) {
+        console.error('❌ Profile insert failed:', insertError);
+        return res.status(400).json({ error: insertError.message || 'Profile insert failed' });
+      }
+    }
+
+    console.log('✅ Profile saved for user:', userId);
+    res.status(201).json({ message: 'User created successfully!' });
+  } catch (err) {
+    console.error('🔥 Unhandled error in signup:', err);
+    res.status(500).json({ error: err.message || 'Internal server error' });
+  }
+});
+
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API is working' });
 });
 
 // Sign In – with profile existence check
