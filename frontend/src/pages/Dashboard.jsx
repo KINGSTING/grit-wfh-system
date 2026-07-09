@@ -3,6 +3,8 @@ import axios from 'axios';
 import logo from '../assets/gritlabs_logo.jpg';
 import Feed from '../components/Feed/Feed';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
 function Dashboard() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -10,7 +12,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/api/profile');
+        const res = await axios.get(`${API_BASE}/profile`);
         setProfile(res.data.data);
       } catch (err) {
         console.error('Failed to fetch profile', err);
@@ -25,7 +27,6 @@ function Dashboard() {
 
   return (
     <div className="dashboard">
-      {/* Left Sidebar */}
       <aside className="dashboard-left">
         <div className="profile">
           <div className="avatar">👤</div>
@@ -44,12 +45,10 @@ function Dashboard() {
         </div>
       </aside>
 
-      {/* Center – Feed */}
       <main className="dashboard-center">
         <Feed />
       </main>
 
-      {/* Right Sidebar – Announcements */}
       <aside className="dashboard-right">
         <h4>Announcements</h4>
         <ul className="announcements">

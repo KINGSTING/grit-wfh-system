@@ -12,7 +12,8 @@ function Feed() {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/api/tasks');
+      const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+      const res = await axios.get(`${API_BASE}/tasks`);
       setPosts(res.data.data);
     } catch (err) {
       console.error('Failed to fetch tasks', err);
