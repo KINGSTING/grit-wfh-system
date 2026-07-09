@@ -11,6 +11,13 @@ app.use(cors());
 app.use(express.json());
 
 // ========================
+//  Redirect URL (dynamic based on environment)
+// ========================
+const redirectUrl = process.env.NODE_ENV === 'production'
+  ? 'https://grit-wfh-system-cyyjmczwq-grit-labs1.vercel.app/login?verified=true'
+  : 'http://localhost:5174/login?verified=true';
+
+// ========================
 //  Supabase Clients
 // ========================
 
@@ -51,7 +58,7 @@ app.post('/api/auth/signup', async (req, res) => {
     email,
     password,
     options: {
-      emailRedirectTo: 'http://localhost:5173/login?verified=true',
+      emailRedirectTo: redirectUrl,
     },
   });
 
