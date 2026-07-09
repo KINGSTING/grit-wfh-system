@@ -74,17 +74,12 @@ app.get('/api/health', async (req, res) => {
 
 // Sign Up – with trigger‑based profile creation
 app.post('/api/auth/signup', async (req, res) => {
-  console.log('📝 Received body:', req.body);
-  console.log('🔑 SUPABASE_URL exists?', !!process.env.SUPABASE_URL);
-  console.log('🔑 SUPABASE_ANON_KEY exists?', !!process.env.SUPABASE_ANON_KEY);
-  console.log('🔑 SUPABASE_SERVICE_ROLE_KEY exists?', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+  console.log('📝 Signup request received:', req.body);
 
   try {
     const { email, password, name, position, team, role } = req.body;
 
-    // Log the exact call being made
-    console.log('📤 Calling supabase.auth.signUp with:', { email });
-
+    // 1. Sign up with Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -93,47 +88,56 @@ app.post('/api/auth/signup', async (req, res) => {
       },
     });
 
-    // Log the raw response
     console.log('📥 Auth response - data:', JSON.stringify(authData, null, 2));
     console.log('📥 Auth response - error:', JSON.stringify(authError, null, 2));
 
     if (authError) {
-      // Try to extract the actual error message
-      const errorMessage = authError.message || JSON.stringify(authError);
-      console.error('❌ Auth error:', errorMessage);
-      return res.status(400).json({ error: errorMessage });
+      console.error('❌ Auth error:', authError);
+      return res.status(400).json({ error: authError.message || 'Auth error' });
     }
 
-    const userId = authData?.user?.id;
+    // If user is null and session is null, email confirmation is required
+    if (!authData.user) {
+      console.log('ℹ️ User created but email confirmation is required.');
+      return res.status(201).json({
+        message: 'User created. Please verify your email address.',
+        requiresVerification: true,
+      });
+    }
+
+    const userId = authData.user.id;
     if (!userId) {
-      console.error('❌ No user ID in response:', authData);
-      return res.status(500).json({ error: 'User creation failed - no user ID returned' });
+      console.error('❌ No user ID in authData');
+      return res.status(500).json({ error: 'User creation failed - no user ID' });
     }
 
     console.log('✅ User created with ID:', userId);
 
-    // Update profile
+    // 2. Update or insert profile
     const { error: updateError } = await supabaseAdmin
       .from('profiles')
       .update({ name, position, team, role })
       .eq('id', userId);
 
     if (updateError) {
-      console.error('⚠️ Profile update failed:', updateError.message);
+      console.error('⚠️ Profile update failed:', updateError);
       const { error: insertError } = await supabaseAdmin
         .from('profiles')
         .insert([{ id: userId, name, position, team, role }]);
-
       if (insertError) {
-        console.error('❌ Profile insert failed:', insertError.message);
+        console.error('❌ Profile insert failed:', insertError);
         return res.status(400).json({ error: insertError.message });
       }
     }
 
+    console.log('✅ Profile saved for user:', userId);
     res.status(201).json({ message: 'User created successfully!' });
+
   } catch (err) {
-    console.error('🔥 Unhandled error:', err);
-    res.status(500).json({ error: err.message || 'Internal server error' });
+    console.error('🔥 Unhandled error in signup:', err);
+    // Ensure we send a proper error message
+    const errorMessage = err && err.message ? err.message : 'Unknown error';
+    res.status(500).json({ error: errorMessage });
   }
 });
 
